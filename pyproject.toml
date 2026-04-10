@@ -1,0 +1,22 @@
+[project]
+name = "variant-calling"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "lightgbm>=4.6.0",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.4",
+    "optuna>=4.8.0",
+    "pandas>=3.0.2",
+    "pyarrow>=23.0.1",
+    "pysam>=0.23.3",
+    "pyvcf3>=1.0.4",
+    "scikit-learn>=1.8.0",
+    "scipy>=1.17.1",
+    "seaborn>=0.13.2",
+    "shap>=0.51.0",
+    "wandb>=0.25.1",
+    "xgboost>=3.2.0",
+]

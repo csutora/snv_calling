@@ -1,0 +1,16 @@
+{
+  "mode": "mask-syn",
+  "best_value": 0.9244281015301037,
+  "best_params": {
+    "max_depth": 9,
+    "learning_rate": 0.06019637859917903,
+    "subsample": 0.8379414574003891,
+    "colsample_bytree": 0.32314296387716596,
+    "min_child_weight": 11,
+    "lambda": 0.1887656439764961,
+    "alpha": 1.7650901889777442,
+    "gamma": 4.5909198619012965,
+    "scale_pos_weight_factor": 2.6719275184104747
+  },
+  "best_trial": 54
+}
