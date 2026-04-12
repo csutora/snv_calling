@@ -14,3 +14,4 @@ data/
 output/*
 !output/model.json
 !output/sweep_mask_syn_best.json
+!output/*_predictions.bed
