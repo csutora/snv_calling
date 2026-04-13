@@ -107,16 +107,19 @@ This way we still benefit from the synthetic data (77,470 labeled mutations for 
 
 ## 3. Results
 
-### 3.1 Baseline performance (on all training data)
+### 3.1 Baseline performance (on real data)
 
-| Method | Precision | Recall | F1 |
+All baselines and our model are evaluated on the same real samples (real1 and real2\_part1).
+
+| Method | Real1 F1 | R2P1 F1 | Mean |
 |---|---|---|---|
-| MuTect2 alone | 0.695 | 0.916 | 0.790 |
-| VarDict alone | 0.662 | 0.916 | 0.768 |
-| FreeBayes alone | 0.683 | 0.851 | 0.758 |
-| VarScan alone | 0.239 | 0.574 | 0.337 |
-| >= 2 callers agree | 0.853 | 0.930 | 0.890 |
-| Best 2 intersection (MuTect2 + VarDict) | 0.968 | 0.891 | 0.928 |
+| MuTect2 alone | 0.358 | 0.240 | 0.299 |
+| FreeBayes alone | 0.294 | 0.213 | 0.254 |
+| VarDict alone | 0.268 | 0.135 | 0.201 |
+| VarScan alone | 0.014 | 0.017 | 0.016 |
+| >= 2 callers agree | 0.561 | 0.302 | 0.432 |
+| Best 2 intersection (MuTect2 + FreeBayes) | 0.821 | 0.774 | 0.797 |
+| **Our model (LOSO)** | **0.897** | **0.952** | **0.924** |
 
 ### 3.2 Ablation study
 
