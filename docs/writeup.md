@@ -53,7 +53,7 @@ Raw VAF depends on tumor purity, but the *ratio* between callers' VAFs should be
 #### Sample-relative rank features
 For depth and quality features, we compute within-sample percentile ranks. A position at the 90th percentile of MuTect2 depth in one sample means the same thing biologically as the 90th percentile in another, even if raw values differ due to different sequencing coverage. We rank-normalize 27 features including per-caller depth, alt depth, quality, AF, and aggregate summaries.
 
-**Total: 155 features** (before domain masking).
+**Total: 147 features.** We use all of them rather than doing explicit feature selection — XGBoost's regularization handles this implicitly. Aggressive feature subsampling (`colsample_bytree=0.323`), high minimum split gain (`gamma=4.59`), and L1 regularization (`alpha=1.77`) ensure that uninformative features simply never get split on. SHAP analysis confirms that ~20 features carry most of the signal, with the remaining 120+ contributing marginally but not harmfully.
 
 ### 2.3 The Domain Shift Problem
 
