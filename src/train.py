@@ -112,6 +112,17 @@ def loso_cv(
         oof_preds[valid_mask],
     )
 
+    # Real threshold: mean of per-fold optimal thresholds on real samples
+    real_folds = [r for r in results if r["sample"].startswith("real")]
+    if real_folds:
+        real_threshold = float(np.mean([r["best_threshold"] for r in real_folds]))
+        # Compute F1 at this threshold on real OOF predictions
+        real_fold_mask = df["sample"].str.startswith("real") & valid_mask
+        real_preds_at_thresh = (oof_preds[real_fold_mask.values] >= real_threshold).astype(int)
+        real_f1 = f1_score(df.loc[real_fold_mask, "label"].values, real_preds_at_thresh, zero_division=0)
+    else:
+        real_threshold, real_f1 = global_threshold, global_f1
+
     summary = {
         "folds": results,
         "mean_f1": float(np.mean(fold_f1s)),
@@ -119,11 +130,14 @@ def loso_cv(
         "mean_threshold": float(np.mean(fold_thresholds)),
         "global_threshold": global_threshold,
         "global_f1": global_f1,
+        "real_threshold": real_threshold,
+        "real_f1": real_f1,
         "oof_preds": oof_preds,
     }
 
     logger.info(f"  LOSO CV: mean F1={summary['mean_f1']:.4f} +/- {summary['std_f1']:.4f}, "
-                f"global F1={global_f1:.4f} (threshold={global_threshold:.3f})")
+                f"global F1={global_f1:.4f} (threshold={global_threshold:.3f}), "
+                f"real F1={real_f1:.4f} (threshold={real_threshold:.3f})")
 
     return summary
 

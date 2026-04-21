@@ -94,8 +94,8 @@ def main():
     # Threshold
     threshold = args.threshold
     if threshold is None:
-        # Default from our best sweep
-        threshold = 0.256
+        # Default: mean of real-fold LOSO thresholds (real1=0.955, r2p1=0.584)
+        threshold = 0.77
         logger.info(f"Using default threshold: {threshold}")
     else:
         logger.info(f"Using provided threshold: {threshold}")

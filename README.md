@@ -91,7 +91,7 @@ uv run python -m src.evaluate \
 The `--data-dir` should be a directory containing `{mutect2,varscan,freebayes,vardict}.vcf.gz` (with `.tbi` indices). The naming convention follows the `test/` folder format.
 
 Optional arguments:
-- `--threshold 0.256` -- prediction threshold (defaults to 0.256, the value from our best sweep)
+- `--threshold 0.77` -- prediction threshold (defaults to 0.77, tuned on real LOSO folds)
 - `--sample-name test` -- sample name for VCF path resolution
 
 ## Training configurations (ablation flags)

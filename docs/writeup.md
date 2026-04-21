@@ -89,7 +89,7 @@ This way we still benefit from the synthetic data (77,470 labeled mutations for 
 
 **Hyperparameter tuning**: 100-trial Optuna sweep with TPE sampler, optimizing real-fold F1. The sweep explores max\_depth, learning\_rate, subsample, colsample\_bytree, min\_child\_weight, L1/L2 regularization, gamma, and scale\_pos\_weight.
 
-**Threshold tuning**: The prediction threshold is tuned on held-out LOSO predictions to maximize F1 (not fixed at 0.5). The optimal threshold reflects the precision-recall tradeoff in the data.
+**Threshold tuning**: The prediction threshold is tuned on held-out LOSO predictions from real folds only (not fixed at 0.5). This is critical -- the global LOSO threshold (0.256) is pulled down by synthetic folds where the model is very confident, producing far too many false positives on real data. The two real fold thresholds are 0.955 (real1) and 0.584 (real2\_part1); we use their mean (0.77) as a balanced compromise for test-time prediction.
 
 ### 2.5 Best hyperparameters (from sweep)
 

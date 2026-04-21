@@ -307,8 +307,9 @@ def main():
         threshold, _ = find_optimal_threshold(df_real["label"].values, real_probs)
         logger.info(f"  Threshold (re-tuned on real data): {threshold:.4f}")
     else:
-        threshold = cv_results["global_threshold"]
-        logger.info(f"  Threshold: {threshold:.4f}")
+        # Use real-fold threshold since test data is real
+        threshold = cv_results["real_threshold"]
+        logger.info(f"  Threshold (from real LOSO folds): {threshold:.4f}")
 
     train_preds = predict(final_model, df, feature_cols, threshold)
     train_metrics = per_sample_f1(df, train_preds["prediction"].values)
