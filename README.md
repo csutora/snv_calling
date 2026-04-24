@@ -1,16 +1,16 @@
-# Variant Calling Meta-Learning Project
+# variant calling meta-learning project
 
-Somatic SNV classification by integrating calls from MuTect2, VarScan, FreeBayes, and VarDict using gradient-boosted trees (XGBoost) with domain-adaptive synthetic feature masking.
+somatic snv classification by integrating calls from mutect2, varscan, freebayes, and vardict using gradient-boosted trees (xgboost) with domain-adaptive synthetic feature masking
 
-## Setup
+## setup
 
-Simplest way via [uv](https://docs.astral.sh/uv/):
+simplest way via [uv](https://docs.astral.sh/uv/):
 
 ```bash
 uv sync
 ```
 
-If you prefer pip:
+if you prefer pip:
 
 ```bash
 python -m venv .venv
@@ -18,68 +18,68 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Reproducing results
+## reproducing results
 
-The full pipeline has three stages: data preparation, training, and evaluation. \
-If you're not using uv, copy the commands without the `uv run` part.
+the full pipeline has three stages: data preparation, training, and evaluation \
+if you're not using uv, copy the commands without the `uv run` part
 
-### 1. Prepare features
+### 1. prepare features
 
-Parses all VCF files, extracts per-caller features, computes derived/rank features, and saves to parquet:
+parses all vcf files, extracts per-caller features, computes derived/rank features, and saves to parquet:
 
 ```bash
 uv run python -m src.prepare_data
 ```
 
-Produces `output/features_{train,real2_part2,test}.parquet`.
+produces `output/features_{train,real2_part2,test}.parquet`
 
-### 2. Train and evaluate
+### 2. train and evaluate
 
-Run the final model (mask-syn with optimized hyperparameters):
+run the final model (mask-syn with optimized hyperparameters):
 
 ```bash
 uv run python -m src.pipeline --no-wandb --mask-syn-raw \
   --params-file output/sweep_mask_syn_best.json
 ```
 
-This will:
-- Load precomputed features
-- Print baseline comparisons (individual callers, 2+ agreement, best-2 intersection)
-- Run LOSO cross-validation and report per-fold F1
-- Train the final model on all data
-- Generate predictions for training samples, real2_part2, and test
-- Save BED files to `output/`
+this will:
+- load precomputed features
+- print baseline comparisons (individual callers, 2+ agreement, best-2 intersection)
+- run leave-one-sample-out cross-validation and report per-fold f1
+- train the final model on all data
+- generate predictions for training samples, real2_part2, and test
+- save bed files to `output/`
 
-To enable [wandb](https://wandb.ai) logging, remove `--no-wandb`.
+to enable [wandb](https://wandb.ai) logging, remove `--no-wandb`
 
-### 3. Run hyperparameter sweep (optional)
+### 3. run hyperparameter sweep (optional)
 
 ```bash
 uv run python -m src.sweep --mode mask-syn --n-trials 100 --no-wandb
 uv run python -m src.sweep --mode real-only --n-trials 100 --no-wandb
 ```
 
-Best parameters are saved to `output/sweep_{mask_syn,real_only}_best.json`.
+best parameters are saved to `output/sweep_{mask_syn,real_only}_best.json`
 
-### 4. SHAP analysis (optional)
+### 4. shap analysis (optional)
 
-Generates interpretability plots in `output/plots/`:
+generates interpretability plots in `output/plots/`:
 
 ```bash
 uv run python -m src.shap_analysis
 ```
 
-### 5. Domain shift analysis (optional)
+### 5. domain shift analysis (optional)
 
-Prints per-feature KS statistics between synthetic and real samples:
+prints per-feature kolmogorov-smirnov statistics between synthetic and real samples:
 
 ```bash
 uv run python -m src.domain_analysis
 ```
 
-## Evaluating on a held-out test set
+## evaluating on a held-out test set
 
-To generate predictions for a new test dataset using a trained model:
+to generate predictions for a new test dataset using a trained model:
 
 ```bash
 uv run python -m src.evaluate \
@@ -88,23 +88,23 @@ uv run python -m src.evaluate \
   --output predictions.bed
 ```
 
-The `--data-dir` should be a directory containing `{mutect2,varscan,freebayes,vardict}.vcf.gz` (with `.tbi` indices). The naming convention follows the `test/` folder format.
+the `--data-dir` should be a directory containing `{mutect2,varscan,freebayes,vardict}.vcf.gz` (with `.tbi` indices)
 
-Optional arguments:
-- `--threshold 0.77` -- prediction threshold (defaults to 0.77, tuned on real LOSO folds)
-- `--sample-name test` -- sample name for VCF path resolution
+optional arguments:
+- `--threshold 0.77` -- prediction threshold (defaults to 0.77, tuned on real loso folds)
+- `--sample-name test` -- sample name for vcf path resolution
 
-## Training configurations (ablation flags)
+## training configurations (ablation flags)
 
-The pipeline supports several training configurations via command-line flags:
+the pipeline supports several training configurations via command-line flags:
 
-| Flag | Description |
+| flag | description |
 |---|---|
-| `--mask-syn-raw` | Mask domain-dependent features for synthetic samples (recommended) |
-| `--real-only` | Train only on real1 + real2_part1 |
-| `--finetune` | Train on all data, then continue boosting on real data only |
-| `--stacked` | Use all-data model predictions as a feature for real-only training |
-| `--no-rank-features` | Drop sample-relative rank features |
-| `--no-vaf-ratio` | Drop cross-caller VAF ratio features |
-| `--params-file FILE` | Load hyperparameters from a sweep results JSON |
-| `--real-weight N` | Upweight real samples during training |
+| `--mask-syn-raw` | mask domain-dependent features for synthetic samples (recommended) |
+| `--real-only` | train only on real1 + real2_part1 |
+| `--finetune` | train on all data, then continue boosting on real data only |
+| `--stacked` | use all-data model predictions as a feature for real-only training |
+| `--no-rank-features` | drop sample-relative rank features |
+| `--no-vaf-ratio` | drop cross-caller vaf ratio features |
+| `--params-file file` | load hyperparameters from a sweep results json |
+| `--real-weight n` | upweight real samples during training |
